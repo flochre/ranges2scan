@@ -21,8 +21,11 @@ Ranges2Scan::Ranges2Scan() : Node("ranges_to_scan") {
   tfListener_ = std::make_shared<tf2_ros::TransformListener>(*tfBuffer_);
 
   // Create a publisher for LaserScan messages
-  laser_scan_pub_ = this->create_publisher<sensor_msgs::msg::LaserScan>("laser_scan_topic", 10);
-  declare_parameter("frame_id", std::string());
+  declare_parameter("scan_topic", std::string("laser_scan_topic"));
+  auto laser_scan_topic = get_parameter("scan_topic").as_string();
+  laser_scan_pub_ = this->create_publisher<sensor_msgs::msg::LaserScan>(laser_scan_topic, 10);
+  
+  declare_parameter("frame_id", std::string("laser_frame"));
   laser_scan_frame_id_ = get_parameter("frame_id").as_string();
 
   // Load parameters and subscribe to range sensors based on the parameters
